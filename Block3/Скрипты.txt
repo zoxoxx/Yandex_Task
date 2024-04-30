@@ -1,0 +1,66 @@
+Создание таблиц:
+
+create table orders
+(
+	order_id serial primary key,
+	promocode_id int
+)
+
+create table promocodes
+(
+	promocode_id serial primary key,
+	name varchar,
+	discount numeric
+)
+
+
+
+Добавление внешнего ключа:
+alter table orders
+add foreign key (promocode_id) references promocodes(promocode_id)
+
+Заполнение таблиц:
+insert into orders (promocode_id)
+values (1), (1), (2), (1), (2), (3), (5), (5), (4) 
+
+
+insert into promocodes (name, discount)
+values ('small', 10), ('pre-middle', 25), ('middle', 30), ('big', 50), ('biggest', 75)
+
+
+Запросы:
+select promocode_id from promocodes
+where discount > 30
+
+
+
+
+
+SELECT 
+    COUNT(*) AS total_orders,
+    SUM(CASE WHEN promocode_id IS NOT NULL THEN 1 ELSE 0 END) AS orders_with_promo_code,
+    (SUM(CASE WHEN promocode_id IS NOT NULL THEN 1 ELSE 0 END) / COUNT(*)) * 100 AS promo_code_percentage
+FROM 
+    orders;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	SELECT 
+    promocodes.name AS promo_code,
+    COUNT(*) AS usage_count
+FROM 
+    promocodes 
+INNER JOIN 
+    orders ON promocodes.promocode_id = orders.promocode_id
+GROUP BY 
+    promocodes.name
+ORDER BY 
+    usage_count DESC;
